@@ -1,106 +1,82 @@
 package limiter
 
 import (
-	"crypto/sha256"
-	"fmt"
-	"io"
+	"hash/fnv"
 	"sync"
 	"time"
 )
 
-
 type Limiter struct {
-	Tokens      int
-	Bucket      int
-	TimeUnit	int
-	LastCheck 	int64
-	Key 		string
+	Timestamps []int64
+	Ttl        int64
+	Counter    int
+	mu         *sync.Mutex
 }
 
-
-func SHA256(data string) string {
-	h256 := sha256.New()
-	io.WriteString(h256, data)
-	return fmt.Sprintf("%x", h256.Sum(nil))
+func hash64(data string) uint64 {
+	var a = fnv.New64()
+	a.Write([]byte(data))
+	return a.Sum64()
 }
-
 
 type UrlRateLimiter struct {
-	urls map[string]* Limiter
-	mu  *sync.RWMutex
-	r   int
-	b   int
+	urls map[uint64]*Limiter
+	mu   *sync.Mutex
+	size int
+	ttl  int64
 }
 
-func NewUrlRateLimiter(r int, b int) * UrlRateLimiter {
+func NewUrlRateLimiter(size int, ttl int64) *UrlRateLimiter {
 	i := &UrlRateLimiter{
-		urls: make(map[string]* Limiter),
-		mu:  &sync.RWMutex{},
-		r:   r,
-		b:   b,
+		urls: make(map[uint64]*Limiter),
+		mu:   &sync.Mutex{},
+		size: size,
+		ttl:  ttl,
 	}
 	return i
 }
 
-
-
-func (i *UrlRateLimiter) GetLimiter(url string) *  Limiter{
-	i.mu.Lock()
-
-	var hashedUrl = SHA256(fmt.Sprintf("%s", url))
+func (i *UrlRateLimiter) GetLimiter(url string) *Limiter {
+	var hashedUrl = hash64(url)
 	limiter, exists := i.urls[hashedUrl]
 
+	i.mu.Lock()
+	defer i.mu.Unlock()
 	if !exists {
-		i.mu.Unlock()
 		return i.AddUrl(hashedUrl)
 	}
-
-	i.mu.Unlock()
 
 	return limiter
 }
 
-func (i *UrlRateLimiter) AddUrl(url string) * Limiter {
-	i.mu.Lock()
-	defer i.mu.Unlock()
-
-	limiter := NewLimiter(i.r,i.b, url)
-
+func (i *UrlRateLimiter) AddUrl(url uint64) *Limiter {
+	limiter := NewLimiter(i.size, i.ttl)
 	i.urls[url] = limiter
 
 	return limiter
 }
 
-
-func  NewLimiter(token int, time int, key string) *Limiter{
-	return &Limiter{Tokens: token, TimeUnit: time, Key: key}
+func NewLimiter(size int, ttl int64) *Limiter {
+	return &Limiter{Timestamps: make([]int64, size), Ttl: ttl, mu: &sync.Mutex{}}
 }
 
-func (t* Limiter) Accept() bool {
+func (limiter *Limiter) Accept() bool {
 
-	// get now (total seconds from 1970)
-	var current = time.Now().Unix()
+	limiter.mu.Lock()
+	defer limiter.mu.Unlock()
 
-	// time elapsed between consecutive calls
-	var elapsed = int64(current) - t.LastCheck
+	// get now (total ms from 1970)
+	var currentTime = time.Now().UnixNano() / 1_000_000
+	var lastRequest = limiter.Timestamps[limiter.Counter]
 
-	var ratio = float64(t.Tokens) / float64(t.TimeUnit)
+	var interval = currentTime - lastRequest
 
-	// update last time to now
-	t.LastCheck = current
-
-	// set limit
-	t.Bucket = t.Bucket + int(float64(elapsed) * ratio)
-
-	if t.Bucket > t.Tokens {
-		// update bounds
-		t.Bucket = t.Tokens
-	}
-	if t.Bucket < 1 {
+	if interval < limiter.Ttl {
 		return false
-	} else {
-		t.Bucket = t.Bucket-1
-		return true
 	}
-}
 
+	limiter.Timestamps[limiter.Counter] = currentTime
+	limiter.Counter = (limiter.Counter + 1) % len(limiter.Timestamps)
+
+	return true
+}
