@@ -1,7 +1,6 @@
-package main
+package limiter
 
 import (
-	limiter "github.com/liranpi2/limiter"
 	"testing"
 )
 
@@ -15,7 +14,7 @@ func TestSHA256(t *testing.T) {
 		{"http://example.com","123"},
 	}
 	for _, data := range data {
-		hashed := limiter.SHA256(data.url)
+		hashed := SHA256(data.url)
 		if hashed != data.expectedHash {
 			t.Errorf("Hash of (%s) was incorrect, got: %s, want: %s.", data.url, hashed, data.expectedHash)
 		}
