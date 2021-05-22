@@ -14,6 +14,7 @@ type Limiter struct {
 	Bucket      int
 	TimeUnit	int
 	LastCheck 	int64
+	Key 		string
 }
 
 
@@ -63,7 +64,7 @@ func (i *UrlRateLimiter) AddUrl(url string) * Limiter {
 	i.mu.Lock()
 	defer i.mu.Unlock()
 
-	limiter := NewLimiter(i.r,i.b)
+	limiter := NewLimiter(i.r,i.b, url)
 
 	i.urls[url] = limiter
 
@@ -71,8 +72,8 @@ func (i *UrlRateLimiter) AddUrl(url string) * Limiter {
 }
 
 
-func  NewLimiter(token int, time int) *Limiter{
-	return &Limiter{Tokens: token, TimeUnit: time}
+func  NewLimiter(token int, time int, key string) *Limiter{
+	return &Limiter{Tokens: token, TimeUnit: time, Key: key}
 }
 
 func (t* Limiter) Accept() bool {
