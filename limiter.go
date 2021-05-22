@@ -1,6 +1,9 @@
 package limiter
 
 import (
+	"crypto/sha256"
+	"fmt"
+	"io"
 	"sync"
 	"time"
 )
@@ -14,9 +17,12 @@ type Limiter struct {
 }
 
 
-type userDB interface {
-	userRoleByID(id string) string
+func SHA256(data string) string {
+	h256 := sha256.New()
+	io.WriteString(h256, data)
+	return fmt.Sprintf("%x", h256.Sum(nil))
 }
+
 
 type UrlRateLimiter struct {
 	urls map[string]* Limiter
@@ -39,11 +45,13 @@ func NewUrlRateLimiter(r int, b int) * UrlRateLimiter {
 
 func (i *UrlRateLimiter) GetLimiter(url string) *  Limiter{
 	i.mu.Lock()
-	limiter, exists := i.urls[url]
+
+	var hashedUrl = SHA256(fmt.Sprintf("%s", url))
+	limiter, exists := i.urls[hashedUrl]
 
 	if !exists {
 		i.mu.Unlock()
-		return i.AddUrl(url)
+		return i.AddUrl(hashedUrl)
 	}
 
 	i.mu.Unlock()
@@ -56,6 +64,7 @@ func (i *UrlRateLimiter) AddUrl(url string) * Limiter {
 	defer i.mu.Unlock()
 
 	limiter := NewLimiter(i.r,i.b)
+
 	i.urls[url] = limiter
 
 	return limiter
@@ -66,7 +75,7 @@ func  NewLimiter(token int, time int) *Limiter{
 	return &Limiter{Tokens: token, TimeUnit: time}
 }
 
-func (t* Limiter) Accept(url string) bool {
+func (t* Limiter) Accept() bool {
 
 	// get now (total seconds from 1970)
 	var current = time.Now().Unix()
