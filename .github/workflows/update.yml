@@ -22,6 +22,6 @@ jobs:
       - name: Pull 
         run: |
           git config user.name ${{ github.actor }}
-          git subtree pull --prefix limiter  https://github.com/liranpi2/limiter.git master && git merge -s ours --allow-unrelated-histories -m "msg"
+          git subtree pull --prefix limiter  https://github.com/liranpi2/limiter.git master --squash && git merge -s subtree --allow-unrelated-histories -m "msg"
           git push
         continue-on-error: true 
