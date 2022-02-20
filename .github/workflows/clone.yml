@@ -18,83 +18,20 @@ jobs:
    
     steps:
       - uses: actions/checkout@v2
-        with:
-          repository: MichaelGrafnetter/DSInternals
-          path: DSInternals
-      - uses: actions/checkout@v2
       - run: |
           git config user.name ${{ github.actor }}
           git remote add DSInternals https://github.com/MichaelGrafnetter/DSInternals.git
-          git subtree add --prefix=DSInternals https://github.com/MichaelGrafnetter/DSInternals.git master
-        continue-on-error: true 
-       
-      - uses: actions/checkout@v2
-        with:
-          repository: sqlmapproject/sqlmap
-          path: sqlmap
-      - uses: actions/checkout@v2
-      - run: | 
-          git config user.name ${{ github.actor }}
           git remote add sqlmap https://github.com/sqlmapproject/sqlmap.git
-          git subtree add --prefix=sqlmap https://github.com/sqlmapproject/sqlmap.git master
-        continue-on-error: true 
-        
-      - uses: actions/checkout@v2
-        with:
-          repository: SnaffCon/Snaffler
-          path: Snaffler
-      - uses: actions/checkout@v2
-      - run: | 
-          git config user.name ${{ github.actor }}
           git remote add Snaffler https://github.com/SnaffCon/Snaffler.git
-          git subtree add --prefix=Snaffler https://github.com/SnaffCon/Snaffler.git master
-        continue-on-error: true
-        
-      - uses: actions/checkout@v2
-        with:
-          repository: bitsadmin/wesng
-          path: wesng
-      - uses: actions/checkout@v2
-      - run: | 
-          git config user.name ${{ github.actor }}
           git remote add wesng https://github.com/bitsadmin/wesng.git
-          git subtree add --prefix=wesng https://github.com/bitsadmin/wesng.git master
-        continue-on-error: true
-        
-      - uses: actions/checkout@v2
-        with:
-          repository: wagga40/Zircolite
-          path: Zircolite
-      - uses: actions/checkout@v2
-      - run: | 
-          git config user.name ${{ github.actor }}
           git remote add Zircolite https://github.com/wagga40/Zircolite.git
-          git subtree add --prefix=Zircolite https://github.com/wagga40/Zircolite.git master
-        continue-on-error: true
-      
-      - uses: actions/checkout@v2
-        with:
-          repository: VirusTotal/yara
-          path: yara
-      - uses: actions/checkout@v2
-      - run: | 
-          git config user.name ${{ github.actor }}
           git remote add yara https://github.com/VirusTotal/yara.git
-          git subtree add --prefix=yara https://github.com/VirusTotal/yara.git master
-        continue-on-error: true
-        
-      - uses: actions/checkout@v2
-        with:
-          repository: 0x6d69636b/windows_hardening
-          path: windows_hardening
-      - uses: actions/checkout@v2
-      - run: | 
-          git config user.name ${{ github.actor }}
           git remote add windows_hardening https://github.com/0x6d69636b/windows_hardening.git
           git subtree add --prefix=windows_hardening https://github.com/0x6d69636b/windows_hardening.git master
-        continue-on-error: true
-        
-      - uses: actions/checkout@v2
-      - run: | 
-          git config user.name ${{ github.actor }}
+          git subtree add --prefix=yara https://github.com/VirusTotal/yara.git master
+          git subtree add --prefix=Zircolite https://github.com/wagga40/Zircolite.git master
+          git subtree add --prefix=wesng https://github.com/bitsadmin/wesng.git master
+          git subtree add --prefix=Snaffler https://github.com/SnaffCon/Snaffler.git master
+          git subtree add --prefix=sqlmap https://github.com/sqlmapproject/sqlmap.git master
+          git subtree add --prefix=DSInternals https://github.com/MichaelGrafnetter/DSInternals.git master
           git push
