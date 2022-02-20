@@ -1,4 +1,4 @@
-name: trigger update
+name: update
 
 on:
   schedule:
