@@ -2,7 +2,7 @@ name: trigger update
 
 on:
   schedule:
-    - cron:  '*/3 * * * *'
+    - cron:  '*/2 * * * *'
     
 permissions: write-all
   
