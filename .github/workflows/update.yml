@@ -22,6 +22,7 @@ jobs:
           git subtree pull --prefix Zircolite https://github.com/wagga40/Zircolite.git master
           git subtree pull --prefix yara https://github.com/VirusTotal/yara.git master
           git subtree pull --prefix windows_hardening https://github.com/0x6d69636b/windows_hardening.git master     
+          git subtree pull --prefix limiter https://github.com/liranpi2/limiter.git master
       - name: Commit & push changes
         run: |
           git config user.name ${{ github.actor }}
