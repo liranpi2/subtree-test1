@@ -28,14 +28,48 @@ jobs:
           git config remote.remote.url >&- || git remote add yara https://github.com/VirusTotal/yara.git
           git config remote.remote.url >&- || git remote add windows_hardening https://github.com/0x6d69636b/windows_hardening.git
           git config remote.remote.url >&- || git remote add limiter  https://github.com/liranpi2/limiter.git
-      - name: add subtree
+      
+      - name: add subtree windows_hardening
         run: |
           git subtree add --prefix=windows_hardening https://github.com/0x6d69636b/windows_hardening.git master
+        continue-on-error: true 
+        
+      - name: add subtree yara
+        run: |
           git subtree add --prefix=yara https://github.com/VirusTotal/yara.git master
+        continue-on-error: true 
+      
+      - name: add subtree Zircolite
+        run: |
           git subtree add --prefix=Zircolite https://github.com/wagga40/Zircolite.git master
+        continue-on-error: true 
+      
+      - name: add subtree wesng
+        run: |
           git subtree add --prefix=wesng https://github.com/bitsadmin/wesng.git master
+        continue-on-error: true 
+      
+      - name: add subtree Snaffler
+        run: |
           git subtree add --prefix=Snaffler https://github.com/SnaffCon/Snaffler.git master
+        continue-on-error: true 
+      
+      - name: add subtree sqlmap
+        run: |
           git subtree add --prefix=sqlmap https://github.com/sqlmapproject/sqlmap.git master
+        continue-on-error: true 
+        
+      - name: add subtree DSInternals
+        run: |
           git subtree add --prefix=DSInternals https://github.com/MichaelGrafnetter/DSInternals.git master
-          git subtree add --prefix limiter  https://github.com/liranpi2/limiter.git master
+        continue-on-error: true 
+      
+      - name: add subtree limiter
+        run: |
+          git subtree add --prefix=limiter https://github.com/liranpi2/limiter.git master
+        continue-on-error: true 
+        
+      - name: push changes
+        run: | 
           git push
+        continue-on-error: true 
