@@ -1,4 +1,4 @@
-name: clone submodules
+name: clone as subtree
 
 on:
   workflow_dispatch:
