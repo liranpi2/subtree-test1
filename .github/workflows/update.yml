@@ -1,0 +1,28 @@
+name: trigger update submodule
+
+on:
+  schedule:
+    - cron:  '0 3 * * *'
+    
+permissions: write-all
+  
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Pull 
+        run: |
+          git subtree pull --prefix DSInternals https://github.com/MichaelGrafnetter/DSInternals.git.git master
+          git subtree pull --prefix sqlmap https://github.com/sqlmapproject/sqlmap.git master
+          git subtree pull --prefix Snaffler https://github.com/SnaffCon/Snaffler.git master
+          git subtree pull --prefix wesng https://github.com/bitsadmin/wesng.git master
+          git subtree pull --prefix Zircolite https://github.com/wagga40/Zircolite.git master
+          git subtree pull --prefix yara https://github.com/VirusTotal/yara.git master
+          git subtree pull --prefix windows_hardening https://github.com/0x6d69636b/windows_hardening.git     
+      - name: Commit & push changes
+        run: |
+          git config user.name ${{ github.actor }}
+          git commit -am "Auto updated references" && git push || echo "No changes to commit"
