@@ -27,6 +27,7 @@ jobs:
           git remote add Zircolite https://github.com/wagga40/Zircolite.git
           git remote add yara https://github.com/VirusTotal/yara.git
           git remote add windows_hardening https://github.com/0x6d69636b/windows_hardening.git
+          git remote add limiter  https://github.com/liranpi2/limiter.git
           git subtree add --prefix=windows_hardening https://github.com/0x6d69636b/windows_hardening.git master
           git subtree add --prefix=yara https://github.com/VirusTotal/yara.git master
           git subtree add --prefix=Zircolite https://github.com/wagga40/Zircolite.git master
@@ -34,4 +35,5 @@ jobs:
           git subtree add --prefix=Snaffler https://github.com/SnaffCon/Snaffler.git master
           git subtree add --prefix=sqlmap https://github.com/sqlmapproject/sqlmap.git master
           git subtree add --prefix=DSInternals https://github.com/MichaelGrafnetter/DSInternals.git master
+          git subtree pull --prefix limiter  https://github.com/liranpi2/limiter.git master
           git push
