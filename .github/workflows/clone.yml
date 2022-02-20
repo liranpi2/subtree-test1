@@ -93,3 +93,8 @@ jobs:
           git remote add windows_hardening https://github.com/0x6d69636b/windows_hardening.git
           git subtree add --prefix=windows_hardening https://github.com/0x6d69636b/windows_hardening.git master
         continue-on-error: true
+        
+      - uses: actions/checkout@v2
+      - run: | 
+          git config user.name ${{ github.actor }}
+          git push
