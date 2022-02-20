@@ -1,4 +1,4 @@
-name: trigger update submodule
+name: trigger update
 
 on:
   schedule:
@@ -15,13 +15,13 @@ jobs:
 
       - name: Pull 
         run: |
-          git subtree pull --prefix DSInternals https://github.com/MichaelGrafnetter/DSInternals.git.git master
+          git subtree pull --prefix DSInternals https://github.com/MichaelGrafnetter/DSInternals.git master
           git subtree pull --prefix sqlmap https://github.com/sqlmapproject/sqlmap.git master
           git subtree pull --prefix Snaffler https://github.com/SnaffCon/Snaffler.git master
           git subtree pull --prefix wesng https://github.com/bitsadmin/wesng.git master
           git subtree pull --prefix Zircolite https://github.com/wagga40/Zircolite.git master
           git subtree pull --prefix yara https://github.com/VirusTotal/yara.git master
-          git subtree pull --prefix windows_hardening https://github.com/0x6d69636b/windows_hardening.git     
+          git subtree pull --prefix windows_hardening https://github.com/0x6d69636b/windows_hardening.git master     
       - name: Commit & push changes
         run: |
           git config user.name ${{ github.actor }}
